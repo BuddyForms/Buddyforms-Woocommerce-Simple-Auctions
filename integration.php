@@ -1,9 +1,9 @@
 <?php
  /*
-  Plugin Name: Buddyforms Woocommerce simple auctions integration
-  Plugin URI: #
+  Plugin Name: Buddyforms Woocommerce Simple Auctions Integration
+  Plugin URI: http://buddyforms.com/downloads/buddyforms-woocommerce-simple-auctions/
   Description: This plugin adds woocommerce simple auctions fields to frontend buddypress profile interface using buddyforms
-  Author: Nitish Dhir, Sven Lehnert
+  Author: Sven Lehnert
   Author URI: http://themekraft.com/members/svenl77/
   License: GPLv2 or later
   Network: false
@@ -75,13 +75,11 @@ function buddyforms_product_write_panel($thepostid, $customfield){
 	$tab_data[] = array();
 	}
 	echo '<div class="options_group auction_tab show_if_auction hide_if_grouped hide_if_external hide_if_variable hide_if_simple">';
-	echo '<div id="auction_tab" class="panel ">';
+	echo '<div id="auction_tab" class=" ">';
 
-	echo '<pre>';
-	print_r($customfield);
-	echo '</pre>';
-
-
+//	echo '<pre>';
+//	print_r($customfield);
+//	echo '</pre>';
 
 	// _auction_item_condition
 	if(isset($customfield['_auction_item_condition']) && $customfield['_auction_item_condition'] == 'display'){
@@ -170,12 +168,18 @@ function buddyforms_product_write_panel($thepostid, $customfield){
 
 
 	$auction_dates_from 	= ( $date = get_post_meta( $post->ID, '_auction_dates_from', true ) ) ?  $date  : '';
+	$required_dates_from       = $customfield['auction_dates_from'][0] == 'required' ? 'required' : '';
+	$required_html_dates_from  = $customfield['auction_dates_from'][0] == 'required' ? '<span class="required">* </span>' : '';
+
 	$auction_dates_to 	= ( $date = get_post_meta( $post->ID, '_auction_dates_to', true ) ) ?  $date  : '';
+	$required_dates_to       = $customfield['auction_dates_to'][0] == 'required' ? 'required' : '';
+	$required_html_dates_to  = $customfield['auction_dates_to'][0] == 'required' ? '<span class="required">* </span>' : '';
 
 	echo '	<div class="form-field auction_dates_fields">
-				<label for="_auction_dates_from">' . __( 'Auction Dates', 'wc_simple_auctions' ) . '</label>
-				<input type="text" class=" bf_datetime_custom " name="_auction_dates_from" id="_auction_dates_from" value="' . $auction_dates_from . '" placeholder="' . _x( 'From&hellip;', 'placeholder', 'wc_simple_auctions' ) . ' YYYY-MM-DD HH:MM" maxlength="16" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])[ ](0[0-9]|1[0-9]|2[0-4]):(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])" />
-				<input type="text" class="bf_datetime_custom " name="_auction_dates_to" id="_auction_dates_to" value="' . $auction_dates_to . '" placeholder="' . _x( 'To&hellip;', 'placeholder', 'wc_simple_auctions' ) . '  YYYY-MM-DD HH:MM" maxlength="16" />
+				<label for="_auction_dates_from">' . $required_html_dates_from . __( 'Auction Date from', 'wc_simple_auctions' ) . '</label>
+				<input ' . $required_dates_from . ' type="text" class=" bf_datetime_custom " name="_auction_dates_from" id="_auction_dates_from" value="' . $auction_dates_from . '" placeholder="' . _x( 'From&hellip;', 'placeholder', 'wc_simple_auctions' ) . ' YYYY-MM-DD HH:MM" maxlength="16" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])[ ](0[0-9]|1[0-9]|2[0-4]):(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])" />
+				<label for="_auction_dates_to">' . $required_html_dates_to . __( 'Auction Date to', 'wc_simple_auctions' ) . '</label>
+				<input ' . $required_dates_to . 'type="text" class="bf_datetime_custom " name="_auction_dates_to" id="_auction_dates_to" value="' . $auction_dates_to . '" placeholder="' . _x( 'To&hellip;', 'placeholder', 'wc_simple_auctions' ) . '  YYYY-MM-DD HH:MM" maxlength="16" />
 			</div>';
 
 	do_action( 'woocommerce_product_options_auction' );
@@ -184,7 +188,7 @@ function buddyforms_product_write_panel($thepostid, $customfield){
 	echo "</div>";
 }
 add_action('bf_woocommerce_product_options_general_last','buddyforms_product_write_panel', 10, 2);
-	
+
 function buddyforms_frontend_custom_intialization(){
 	wp_enqueue_script( 'frontend-bb-simple-auction',plugins_url('integration.js', __FILE__) );
 }
@@ -192,11 +196,11 @@ add_action('buddyforms_front_js_css_enqueue','buddyforms_frontend_custom_intiali
 
 /**
  * Saves the data inputed into the product boxes, as post meta data
- * 
- * 
+ *
+ *
  * @param int $post_id the post (product) identifier
  * @param stdClass $post the post (product)
- * 
+ *
  */
 function buddyforms_product_save_data($post,$post_id){
 	global $wpdb, $woocommerce, $woocommerce_errors;
@@ -213,7 +217,7 @@ if (
 	if(isset($_POST['_auction_proxy'])){
 		update_post_meta( $post_id, '_auction_proxy', stripslashes( $_POST['_auction_proxy'] ) );
 	} else {
-		delete_post_meta( $post_id, '_auction_proxy' );	
+		delete_post_meta( $post_id, '_auction_proxy' );
 	}
 	update_post_meta( $post_id, '_auction_start_price', stripslashes( $_POST['_auction_start_price'] ) );
 	update_post_meta( $post_id, '_auction_bid_increment', stripslashes( $_POST['_auction_bid_increment'] ) );
@@ -221,16 +225,16 @@ if (
 	update_post_meta( $post_id, '_regular_price', stripslashes( $_POST['_regular_price'] ) );
 	update_post_meta( $post_id, '_auction_dates_from', stripslashes( $_POST['_auction_dates_from'] ) );
 	update_post_meta( $post_id, '_auction_dates_to', stripslashes( $_POST['_auction_dates_to'] ) );
-	
+
 	//echo get_post_meta($post_id, '_stock',true);
-	
+
 	}
 }
 add_action('buddyforms_update_post_meta','buddyforms_product_save_data', 99, 2);
 
 function buddyforms_product_save_data_after($post_id){
 	global $post;
-	if( function_exists('get_product') ){
+	if( function_exists('get_product') && function_exists('woo_simple_auction_required')){
 		$product = get_product( $post_id );
 		if( $product->is_type( 'auction' ) ){
 			// do something with external products
