@@ -17,16 +17,25 @@ This is the BuddyForms WooCommerce Simple Auction Extension. Use Simple Auction 
 You need the BuddyForms plugin installed for the Extension to work. <a href="http://buddyforms.com" target="_blank">Get BuddyForms Now!</a>
 You need the WooCommerce Simple Auction plugin installed for the Extension to work. <a href="http://codecanyon.net/item/woocommerce-simple-auctions/6811382" target="_blank">Get Simple Auctions Now!</a>
 
-This plugin adds a new section to the BuddyForms WooCommerce Form Element "Auctions" with all Simple Auction fields to create product forms to manage (create/edit) Auctions from the Front end.
+This plugin adds a new section to the BuddyForms WooCommerce Form Element "Auctions" with all Simple Auction fields to create product forms to manage (create/edit) Auctions from the front end.
 
-<b>WooCommerce Simple Auction Fields</b>
+<b>WooCommerce Simple Auction Form Element Options</b>
 
 <ul>
-<li></li>
-<li></li>
+<li>Item Condition</li>
+<li>Auction Type</li>
+<li>Auction Proxy</li>
+<li>Start Price</li>
+<li>Bid increment</li>
+<li>Reserve price</li>
+<li>Buy it now price</li>
+<li>Auction Date from</li>
+<li>Auction Dates to</li>
 </ul>
 
 for more information please read the documentation on How to <a href="http://docs.buddyforms.com/article/151-create-a-social-marketplace-with-woocommerce-and-buddypress" target="_blank">Create a Marketplace with WordPress, WooCommerce and BuddyPress</a>.
+
+You can select the visibility for each setting and give it a default value to simplify the form and only display relevant form elements for your use needs.
 
 
 == Documentation & Support ==

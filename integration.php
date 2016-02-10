@@ -9,15 +9,13 @@
   Network: false
   */
 
-add_filter('buddyforms_formbuilder_fields_options', 'buddyforms_simple_auctions_add_wc__form_element_tab', 2, 3);
-function buddyforms_simple_auctions_add_wc__form_element_tab($form_fields,$field_type,$field_id){
+add_filter('buddyforms_formbuilder_fields_options', 'buddyforms_simple_auctions_add_wc_form_element_tab', 2, 3);
+function buddyforms_simple_auctions_add_wc_form_element_tab($form_fields,$field_type,$field_id){
 	global $post;
 
 	$buddyform = get_post_meta($post->ID, '_buddyforms_options', true);
 
-	$hook_field_types = array(
-		'WooCommerce',
-		);
+	$hook_field_types = array('woocommerce');
 
 	if (!in_array($field_type, $hook_field_types))
 		return $form_fields;
@@ -76,10 +74,6 @@ function buddyforms_product_write_panel($thepostid, $customfield){
 	}
 	echo '<div class="options_group auction_tab show_if_auction hide_if_grouped hide_if_external hide_if_variable hide_if_simple">';
 	echo '<div id="auction_tab" class=" ">';
-
-//	echo '<pre>';
-//	print_r($customfield);
-//	echo '</pre>';
 
 	// _auction_item_condition
 	if(isset($customfield['_auction_item_condition']) && $customfield['_auction_item_condition'] == 'display'){
