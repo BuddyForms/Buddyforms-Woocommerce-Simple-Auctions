@@ -5,6 +5,7 @@
   Description: This plugin adds woocommerce simple auctions fields to frontend buddypress profile interface using buddyforms
   Author: Sven Lehnert
   Author URI: http://themekraft.com/members/svenl77/
+	Version: 1.0
   License: GPLv2 or later
   Network: false
   */
@@ -173,7 +174,7 @@ function buddyforms_product_write_panel($thepostid, $customfield){
 				<label for="_auction_dates_from">' . $required_html_dates_from . __( 'Auction Date from', 'wc_simple_auctions' ) . '</label>
 				<input ' . $required_dates_from . ' type="text" class=" bf_datetime_custom " name="_auction_dates_from" id="_auction_dates_from" value="' . $auction_dates_from . '" placeholder="' . _x( 'From&hellip;', 'placeholder', 'wc_simple_auctions' ) . ' YYYY-MM-DD HH:MM" maxlength="16" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])[ ](0[0-9]|1[0-9]|2[0-4]):(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])" />
 				<label for="_auction_dates_to">' . $required_html_dates_to . __( 'Auction Date to', 'wc_simple_auctions' ) . '</label>
-				<input ' . $required_dates_to . 'type="text" class="bf_datetime_custom " name="_auction_dates_to" id="_auction_dates_to" value="' . $auction_dates_to . '" placeholder="' . _x( 'To&hellip;', 'placeholder', 'wc_simple_auctions' ) . '  YYYY-MM-DD HH:MM" maxlength="16" />
+				<input ' . $required_dates_to . ' type="text" class="bf_datetime_custom " name="_auction_dates_to" id="_auction_dates_to" value="' . $auction_dates_to . '" placeholder="' . _x( 'To&hellip;', 'placeholder', 'wc_simple_auctions' ) . '  YYYY-MM-DD HH:MM" maxlength="16" />
 			</div>';
 
 	do_action( 'woocommerce_product_options_auction' );
@@ -184,7 +185,8 @@ function buddyforms_product_write_panel($thepostid, $customfield){
 add_action('bf_woocommerce_product_options_general_last','buddyforms_product_write_panel', 10, 2);
 
 function buddyforms_frontend_custom_intialization(){
-	wp_enqueue_script( 'frontend-bb-simple-auction',plugins_url('integration.js', __FILE__) );
+
+	wp_enqueue_script( 'frontend-bb-simple-auction',plugins_url('integration.js', __FILE__), array('jquery') );
 }
 add_action('buddyforms_front_js_css_enqueue','buddyforms_frontend_custom_intialization',3);
 
