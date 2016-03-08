@@ -4,7 +4,7 @@ Contributors: svenl77, buddyforms
 Tags: buddypress, user, members, profiles, custom post types, taxonomy, frontend posting, frontend editing, simple auction
 Requires at least: WordPress 3.9
 Tested up to: 4.4.2
-Stable tag: 1.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,14 +14,7 @@ Add the WooCommerce Simple Auction Form Elements to BuddyForms
 
 This is the BuddyForms WooCommerce Simple Auction Extension. Use Simple Auction Form Elements in the Form Builder.
 
-<h4>Dependencies</h4>
-You need the BuddyForms plugin installed for the Extension to work.
-<a href="http://buddyforms.com" target="_blank">Get BuddyForms Now!</a>
-<br>
-You need the WooCommerce Simple Auction plugin installed for the Extension to work.
-<a href="http://codecanyon.net/item/woocommerce-simple-auctions/6811382" target="_blank">Get Simple Auctions Now!</a>
-
-This plugin adds a new section to the BuddyForms WooCommerce Form Element "Auctions" with all Simple Auction fields to create product forms to manage (create/edit) Auctions from the front end.
+The plugin adds a new section to the BuddyForms WooCommerce Form Element "Auctions" with all Simple Auction fields to create product forms to manage (create/edit) Auctions from the front end.
 
 <h4>WooCommerce Simple Auction Form Element Options</h4>
 <ul>
@@ -40,6 +33,21 @@ for more information please read the documentation on How to <a href="http://doc
 
 You can select the visibility for each setting and give it a default value to simplify the form and only display relevant form elements for your use needs.
 
+<h4>Full BuddyPress Support</h4>
+
+Integrate your auction into BuddyPress Member Profiles and list all auctions of a member in the profile.
+Give your members a centralised place to manage there auctions.
+
+<h4>Dependencies</h4>
+You need the BuddyForms plugin installed for the Extension to work.
+<a href="http://buddyforms.com" target="_blank">Get BuddyForms Now!</a>
+<br><br>
+You need the WooCommerce Simple Auction plugin installed for the Extension to work.
+<a href="http://codecanyon.net/item/woocommerce-simple-auctions/6811382" target="_blank">Get Simple Auctions Now!</a>
+
+<br><br>
+
+Find more information on https://buddyforms.com/downloads/buddyforms-woocommerce-simple-auction/
 
 == Documentation & Support ==
 
@@ -71,5 +79,13 @@ The plugin should work with every theme. (Please let us know if you experience a
 
 == Changelog ==
 
- -- 1.0 --
+-- 1.0.1 --
+<ul>
+<li>smaller changes</li>
+<li>code cleanup</li>
+<li>Update the readme file and screenshots</li>
+</ul>
+
+
+-- 1.0 --
 <ul><li>Initial release 1.0</li></ul>
