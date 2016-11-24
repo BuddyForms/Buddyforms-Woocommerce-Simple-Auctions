@@ -5,7 +5,7 @@
  Description: This plugin adds woocommerce simple auctions fields to frontend buddypress profile interface using buddyforms
  Author: Sven Lehnert
  Author URI: http://themekraft.com/members/svenl77/
- Version: 1.0.2
+ Version: 1.0.3
  License: GPLv2 or later
  Network: false
  */
