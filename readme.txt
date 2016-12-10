@@ -3,8 +3,8 @@
 Contributors: svenl77,konradS, buddyforms
 Tags: buddypress, user, members, profiles, custom post types, taxonomy, frontend posting, frontend editing, simple auction
 Requires at least: 3.9
-Tested up to: 4.6.1
-Stable tag: 1.0.3
+Tested up to: 4.7
+Stable tag: 1.0.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,12 @@ The plugin should work with every theme. (Please let us know if you experience a
 3. **Date Select** - Select your auction dates with a mobile ready date picker.
 
 == Changelog ==
+
+
+-- 1.0.3.1 --
+<ul>
+<li>Fixed and issue with the dependencies check. The function tgmpa does not accepted an empty array.</li>
+</ul>
 
 
 -- 1.0.3 --

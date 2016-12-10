@@ -5,7 +5,7 @@
  Description: This plugin adds woocommerce simple auctions fields to frontend buddypress profile interface using buddyforms
  Author: Sven Lehnert
  Author URI: http://themekraft.com/members/svenl77/
- Version: 1.0.3
+ Version: 1.0.3.1
  License: GPLv2 or later
  Network: false
  */
@@ -338,18 +338,19 @@ add_action('init', function(){
 	add_action( 'tgmpa_register', function(){
 
 		// Create the required plugins array
-		$plugins = array(
-			array(
-				'name'              => 'BuddyForms',
-				'slug'              => 'buddyforms',
-				'required'          => true,
-			),
-			array(
-				'name'              => 'WooCommerce',
-				'slug'              => 'woocommerce',
-				'required'          => true,
-			),
+		$plugins['woocommerce'] = array(
+			'name'     => 'WooCommerce',
+			'slug'     => 'woocommerce',
+			'required' => true,
 		);
+
+		if ( ! defined( 'BUDDYFORMS_PRO_VERSION' ) ) {
+			$plugins['buddyforms'] = array(
+				'name'      => 'BuddyForms',
+				'slug'      => 'buddyforms',
+				'required'  => true,
+			);
+		}
 
 		$config = array(
 			'id'           => 'buddyforms-tgmpa',  // Unique ID for hashing notices for multiple instances of TGMPA.
