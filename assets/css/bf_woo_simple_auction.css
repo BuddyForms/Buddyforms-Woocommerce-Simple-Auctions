@@ -1,0 +1,12 @@
+/*
+ * @package WordPress
+ * @subpackage Woocommerce, BuddyForms
+ * @author ThemKraft Dev Team
+ * @copyright 2017, Themekraft
+ * @link http://buddyforms.com/downloads/buddyforms-woocommerce-form-elements/
+ * @license GPLv2 or later
+ */
+
+.auction_dates_fields .short {
+	width: auto !important;
+}

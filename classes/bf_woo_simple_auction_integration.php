@@ -14,13 +14,57 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class bf_woo_simple_auction_integration {
 	
+	private $loaded_script = false;
+	private $save_with_woocommerce_field = false;
+	
 	public function __construct() {
 		add_filter( 'buddyforms_formbuilder_fields_options', array( $this, 'buddyforms_simple_auctions_add_wc_form_element_tab' ), 2, 3 );
-		add_action( 'bf_woocommerce_product_options_general_last', array( $this, 'buddyforms_product_write_panel' ), 10, 2 );
+//		add_action( 'bf_woocommerce_product_options_general_last', array( $this, 'buddyforms_product_write_panel' ), 10, 2 );
 		add_action( 'buddyforms_front_js_css_enqueue', array( $this, 'buddyforms_frontend_custom_intialization' ), 3 );
 		add_action( 'buddyforms_update_post_meta', array( $this, 'buddyforms_product_save_data' ), 99, 2 );
 		add_action( 'buddyforms_after_save_post', array( $this, 'buddyforms_product_save_data_after' ), 100, 1 );
-		add_filter( 'bf_woo_element_woo_implemented_tab', array( $this, 'woo_implemented_tab' ), 10, 1 );
+//		add_filter( 'bf_woo_element_woo_implemented_tab', array( $this, 'woo_implemented_tab' ), 10, 1 );
+		add_filter( 'buddyforms_create_edit_form_display_element', array( $this, 'form_display_element' ), 10, 2 );
+	}
+	
+	public function form_display_element( $form, $form_args ) {
+		extract( $form_args );
+		if ( ! isset( $customfield['type'] ) ) {
+			return $form;
+		}
+		if ( ( $customfield['type'] == 'woocommerce' || $customfield['type'] == 'product-gallery' ) && is_user_logged_in() ) {
+			if ( ! $this->loaded_script ) {
+				$simple_auction = new WooCommerce_simple_auction();
+				$this->add_scripts( $simple_auction );
+			}
+		}
+		
+		return $form;
+	}
+	
+	/**
+	 * @param WooCommerce_simple_auction $simple_auction
+	 *
+	 */
+	private function add_scripts( $simple_auction ) {
+		wp_register_script(
+			'simple-auction-admin',
+			$simple_auction->plugin_url . '/js/simple-auction-admin.js',
+			array( 'jquery', 'jquery-ui-core', 'jquery-ui-datepicker', 'timepicker-addon' ),
+			'1',
+			true
+		);
+		wp_enqueue_script( 'simple-auction-admin' );
+		wp_enqueue_script(
+			'timepicker-addon',
+			$simple_auction->plugin_url . '/js/jquery-ui-timepicker-addon.js',
+			array( 'jquery', 'jquery-ui-core', 'jquery-ui-datepicker' ),
+			$simple_auction->version,
+			true
+		);
+		wp_enqueue_style( 'jquery-ui-datepicker' );
+		wp_enqueue_style( 'bf_woo_simple_auction', BF_WOO_SIMPLE_AUCTION_CSS_PATH . 'bf_woo_simple_auction.css' );
+		$this->loaded_script = true;
 	}
 	
 	public function woo_implemented_tab( $tabs ) {
@@ -268,7 +312,8 @@ class bf_woo_simple_auction_integration {
 	}
 	
 	public function buddyforms_frontend_custom_intialization() {
-		wp_enqueue_script( 'frontend-bb-simple-auction', BF_WOO_SIMPLE_AUCTION_JS_PATH . 'integration.js', array( 'jquery' ) );
+
+//		wp_enqueue_script( 'frontend-bb-simple-auction', BF_WOO_SIMPLE_AUCTION_JS_PATH . 'integration.js', array( 'jquery' ) );
 	}
 	
 	/**
@@ -281,39 +326,45 @@ class bf_woo_simple_auction_integration {
 	 */
 	public function buddyforms_product_save_data( $post, $post_id ) {
 		global $wpdb, $woocommerce, $woocommerce_errors;
-		$product_type = empty( $_POST['product-type'] ) ? 'simple' : sanitize_title( stripslashes( $_POST['product-type'] ) );
-		if ( $product_type == 'auction' ) {
-			update_post_meta( $post_id, '_manage_stock', 'yes' );
-			update_post_meta( $post_id, '_stock', '1' );
-			update_post_meta( $post_id, '_backorders', 'no' );
-			update_post_meta( $post_id, '_sold_individually', 'yes' );
-			update_post_meta( $post_id, '_auction_item_condition', stripslashes( $_POST['_auction_item_condition'] ) );
-			update_post_meta( $post_id, '_auction_type', stripslashes( $_POST['_auction_type'] ) );
-			if ( isset( $_POST['_auction_proxy'] ) ) {
-				update_post_meta( $post_id, '_auction_proxy', stripslashes( $_POST['_auction_proxy'] ) );
-			} else {
-				delete_post_meta( $post_id, '_auction_proxy' );
-			}
-			update_post_meta( $post_id, '_auction_start_price', stripslashes( $_POST['_auction_start_price'] ) );
-			update_post_meta( $post_id, '_auction_bid_increment', stripslashes( $_POST['_auction_bid_increment'] ) );
-			update_post_meta( $post_id, '_auction_reserved_price', stripslashes( $_POST['_auction_reserved_price'] ) );
-			update_post_meta( $post_id, '_regular_price', stripslashes( $_POST['_regular_price'] ) );
-			update_post_meta( $post_id, '_auction_dates_from', stripslashes( $_POST['_auction_dates_from'] ) );
-			update_post_meta( $post_id, '_auction_dates_to', stripslashes( $_POST['_auction_dates_to'] ) );
-			//echo get_post_meta($post_id, '_stock',true);
-		}
-	}
-	
-	public function buddyforms_product_save_data_after( $post_id ) {
-		global $post;
-		if ( function_exists( 'get_product' ) && function_exists( 'woo_simple_auction_required' ) ) {
-			$product = get_product( $post_id );
-			if ( $product->is_type( 'auction' ) ) {
-				// do something with external products
+		if ( $post['type'] == 'woocommerce' ) {
+			$this->save_with_woocommerce_field = true;
+			$product_type                      = empty( $_POST['product-type'] ) ? 'simple' : sanitize_title( stripslashes( $_POST['product-type'] ) );
+			
+			if ( $product_type == 'auction' ) {
 				update_post_meta( $post_id, '_manage_stock', 'yes' );
 				update_post_meta( $post_id, '_stock', '1' );
 				update_post_meta( $post_id, '_backorders', 'no' );
 				update_post_meta( $post_id, '_sold_individually', 'yes' );
+				update_post_meta( $post_id, '_auction_item_condition', stripslashes( $_POST['_auction_item_condition'] ) );
+				update_post_meta( $post_id, '_auction_type', stripslashes( $_POST['_auction_type'] ) );
+				if ( isset( $_POST['_auction_proxy'] ) ) {
+					update_post_meta( $post_id, '_auction_proxy', stripslashes( $_POST['_auction_proxy'] ) );
+				} else {
+					delete_post_meta( $post_id, '_auction_proxy' );
+				}
+				update_post_meta( $post_id, '_auction_start_price', stripslashes( $_POST['_auction_start_price'] ) );
+				update_post_meta( $post_id, '_auction_bid_increment', stripslashes( $_POST['_auction_bid_increment'] ) );
+				update_post_meta( $post_id, '_auction_reserved_price', stripslashes( $_POST['_auction_reserved_price'] ) );
+				update_post_meta( $post_id, '_regular_price', stripslashes( $_POST['_regular_price'] ) );
+				update_post_meta( $post_id, '_auction_dates_from', stripslashes( $_POST['_auction_dates_from'] ) );
+				update_post_meta( $post_id, '_auction_dates_to', stripslashes( $_POST['_auction_dates_to'] ) );
+				//echo get_post_meta($post_id, '_stock',true);
+			}
+		}
+	}
+	
+	public function buddyforms_product_save_data_after( $post_id ) {
+		if ( $this->save_with_woocommerce_field ) {
+			global $post;
+			if ( function_exists( 'wc_get_product' ) ) {
+				$product = wc_get_product( $post_id );
+				if ( ! empty( $product ) && is_object( $product ) && $product->is_type( 'auction' ) ) {
+					// do something with external products
+					update_post_meta( $post_id, '_manage_stock', 'yes' );
+					update_post_meta( $post_id, '_stock', '1' );
+					update_post_meta( $post_id, '_backorders', 'no' );
+					update_post_meta( $post_id, '_sold_individually', 'yes' );
+				}
 			}
 		}
 	}

@@ -61,6 +61,7 @@ if ( ! class_exists( 'bf_woo_simple_auction' ) ) {
 			define( 'BF_WOO_SIMPLE_AUCTION_BASE_NAME', plugin_basename( __FILE__ ) );
 			define( 'BF_WOO_SIMPLE_AUCTION_BASE_NAMEBASE_FILE', trailingslashit( wp_normalize_path( plugin_dir_path( __FILE__ ) ) ) . 'loader.php' );
 			define( 'BF_WOO_SIMPLE_AUCTION_JS_PATH', plugin_dir_url( __FILE__ ) . 'assets/js/' );
+			define( 'BF_WOO_SIMPLE_AUCTION_CSS_PATH', plugin_dir_url( __FILE__ ) . 'assets/css/' );
 			define( 'BF_WOO_SIMPLE_AUCTION_VIEW_PATH', dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR );
 			define( 'BF_WOO_SIMPLE_AUCTION_CLASSES_PATH', dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR );
 		}
