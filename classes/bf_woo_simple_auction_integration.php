@@ -20,7 +20,6 @@ class bf_woo_simple_auction_integration {
 	public function __construct() {
 		add_filter( 'buddyforms_formbuilder_fields_options', array( $this, 'buddyforms_simple_auctions_add_wc_form_element_tab' ), 2, 3 );
 //		add_action( 'bf_woocommerce_product_options_general_last', array( $this, 'buddyforms_product_write_panel' ), 10, 2 );
-		add_action( 'buddyforms_front_js_css_enqueue', array( $this, 'buddyforms_frontend_custom_intialization' ), 3 );
 		add_action( 'buddyforms_update_post_meta', array( $this, 'buddyforms_product_save_data' ), 99, 2 );
 		add_action( 'buddyforms_after_save_post', array( $this, 'buddyforms_product_save_data_after' ), 100, 1 );
 //		add_filter( 'bf_woo_element_woo_implemented_tab', array( $this, 'woo_implemented_tab' ), 10, 1 );
@@ -35,7 +34,7 @@ class bf_woo_simple_auction_integration {
 		if ( ( $customfield['type'] == 'woocommerce' || $customfield['type'] == 'product-gallery' ) && is_user_logged_in() ) {
 			if ( ! $this->loaded_script ) {
 				$simple_auction = new WooCommerce_simple_auction();
-				$this->add_scripts( $simple_auction );
+				$this->add_scripts( $simple_auction, $customfield );
 			}
 		}
 		
@@ -44,14 +43,14 @@ class bf_woo_simple_auction_integration {
 	
 	/**
 	 * @param WooCommerce_simple_auction $simple_auction
-	 *
+	 * @param array $custom_field
 	 */
-	private function add_scripts( $simple_auction ) {
+	private function add_scripts( $simple_auction, $custom_field ) {
 		wp_register_script(
 			'simple-auction-admin',
 			$simple_auction->plugin_url . '/js/simple-auction-admin.js',
 			array( 'jquery', 'jquery-ui-core', 'jquery-ui-datepicker', 'timepicker-addon' ),
-			'1',
+			$simple_auction->version,
 			true
 		);
 		wp_enqueue_script( 'simple-auction-admin' );
@@ -64,6 +63,9 @@ class bf_woo_simple_auction_integration {
 		);
 		wp_enqueue_style( 'jquery-ui-datepicker' );
 		wp_enqueue_style( 'bf_woo_simple_auction', BF_WOO_SIMPLE_AUCTION_CSS_PATH . 'bf_woo_simple_auction.css' );
+		wp_register_script( 'bf_woo_simple_auction', BF_WOO_SIMPLE_AUCTION_JS_PATH . 'bf_woo_simple_auction.js', array( 'jquery' ), bf_woo_simple_auction_manager::get_version(), true );
+		wp_enqueue_script( 'bf_woo_simple_auction' );
+		wp_localize_script( 'bf_woo_simple_auction', 'bf_woo_simple_auction', $custom_field );
 		$this->loaded_script = true;
 	}
 	
@@ -309,11 +311,6 @@ class bf_woo_simple_auction_integration {
 		
 		echo "</div>";
 		echo "</div>";
-	}
-	
-	public function buddyforms_frontend_custom_intialization() {
-
-//		wp_enqueue_script( 'frontend-bb-simple-auction', BF_WOO_SIMPLE_AUCTION_JS_PATH . 'integration.js', array( 'jquery' ) );
 	}
 	
 	/**
