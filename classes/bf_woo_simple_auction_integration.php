@@ -16,16 +16,31 @@ class bf_woo_simple_auction_integration {
 	
 	private $loaded_script = false;
 	private $save_with_woocommerce_field = false;
-	/** @var WooCommerce_simple_auction  */
+	/** @var WooCommerce_simple_auction */
 	private $simple_auction = null;
+	private $buddy_form_query;
 	
 	public function __construct() {
 		add_filter( 'buddyforms_formbuilder_fields_options', array( $this, 'buddyforms_simple_auctions_add_wc_form_element_tab' ), 2, 3 );
-//		add_action( 'bf_woocommerce_product_options_general_last', array( $this, 'buddyforms_product_write_panel' ), 10, 2 );
 		add_action( 'buddyforms_update_post_meta', array( $this, 'buddyforms_product_save_data' ), 99, 2 );
 		add_action( 'buddyforms_after_save_post', array( $this, 'buddyforms_product_save_data_after' ), 992, 1 );
-//		add_filter( 'bf_woo_element_woo_implemented_tab', array( $this, 'woo_implemented_tab' ), 10, 1 );
 		add_filter( 'buddyforms_create_edit_form_display_element', array( $this, 'form_display_element' ), 10, 2 );
+		add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ), 99 );
+		add_action( 'buddyforms_the_loop_start', array( $this, 'buddyforms_the_loop_start' ), 10, 1 );
+	}
+	
+	public function buddyforms_the_loop_start( $args ) {
+		if ( ! empty( $args['meta_key'] ) && $args['meta_key'] == '_bf_form_slug' ) {
+			$this->buddy_form_query = true;
+		}
+	}
+	
+	public function pre_get_posts( $q ) {
+		if ( $this->buddy_form_query && isset( $q->query['auction_arhive'] ) OR ( ! isset( $q->query['auction_arhive'] ) && ( isset( $q->query['post_type'] ) && $q->query['post_type'] == 'product' && ! $q->is_main_query() ) ) ) {
+			if ( isset( $q->query_vars['tax_query'] ) ) {
+				unset( $q->query_vars['tax_query'] );
+			}
+		}
 	}
 	
 	public function form_display_element( $form, $form_args ) {
@@ -69,10 +84,6 @@ class bf_woo_simple_auction_integration {
 		wp_enqueue_script( 'bf_woo_simple_auction' );
 		wp_localize_script( 'bf_woo_simple_auction', 'bf_woo_simple_auction', $custom_field );
 		$this->loaded_script = true;
-	}
-	
-	public function woo_implemented_tab( $tabs ) {
-		return array_merge( $tabs, array( 'auction_tab' ) );
 	}
 	
 	public function buddyforms_simple_auctions_add_wc_form_element_tab( $form_fields, $field_type, $field_id ) {
@@ -153,168 +164,6 @@ class bf_woo_simple_auction_integration {
 		return $form_fields;
 	}
 	
-	public function buddyforms_product_write_panel( $thepostid, $customfield ) {
-		global $post;
-		$required               = $required_html = '';
-		$auction_item_condition = array(
-			'new'  => __( 'New', 'wc_simple_auctions' ),
-			'used' => __( 'Used', 'wc_simple_auctions' )
-		);
-		$auction_types          = array(
-			'normal'  => __( 'Normal', 'wc_simple_auctions' ),
-			'reverse' => __( 'Reverse', 'wc_simple_auctions' )
-		);
-		
-		// Pull the video tab data out of the database
-		$tab_data = maybe_unserialize( get_post_meta( $post->ID, 'woo_auction_tab', true ) );
-		if ( empty( $tab_data ) ) {
-			$tab_data[] = array();
-		}
-		echo '<div class="options_group auction_tab show_if_auction hide_if_grouped hide_if_external hide_if_variable hide_if_simple">';
-		echo '<div id="auction_tab" class=" ">';
-		
-		// _auction_item_condition
-		if ( isset( $customfield['_auction_item_condition'] ) && $customfield['_auction_item_condition'] == 'display' ) {
-			woocommerce_wp_select( array(
-				'custom_attributes' => $required,
-				'id'                => '_auction_item_condition',
-				'label'             => $required_html . __( 'Item condition', 'wc_simple_auctions' ),
-				'options'           => apply_filters( 'simple_auction_item_condition', $auction_item_condition )
-			) );
-		} else {
-			echo '<input type="hidden" name="_auction_item_condition" value="' . $customfield['_auction_item_condition'] . '" />';
-		}
-		
-		// _auction_type
-		if ( isset( $customfield['_auction_type'] ) && $customfield['_auction_type'] == 'display' ) {
-			woocommerce_wp_select( array(
-				'custom_attributes' => $required,
-				'id'                => '_auction_type',
-				'label'             => $required_html . __( 'Auction type', 'wc_simple_auctions' ),
-				'options'           => $auction_types
-			) );
-		} else {
-			echo '<input type="hidden" name="_auction_type" value="' . $customfield['_auction_item_condition'] . '" />';
-		}
-		
-		// _auction_proxy
-		if ( isset( $customfield['_auction_proxy'] ) && $customfield['_auction_proxy'] == 'display' ) {
-			woocommerce_wp_checkbox( array(
-				'custom_attributes' => $required,
-				'id'                => '_auction_proxy',
-				'label'             => $required_html . __( 'Proxy bidding?', 'wc_simple_auctions' ),
-				'description'       => __( 'Enable proxy bidding', 'wc_simple_auctions' ),
-				'cbvalue'           => 'yes',
-				'checked'           => 'true'
-			) );
-		} else {
-			echo '<input type="hidden" name="_auction_proxy" value="' . $customfield['_auction_proxy'] . '" />';
-		}
-		
-		// _auction_start_price
-		if ( isset( $customfield['_auction_start_price'] ) && $customfield['_auction_start_price'] != 'hidden' ) {
-			$required      = $customfield['_auction_start_price'] == 'required' ? array( 'required' => '' ) : '';
-			$required_html = $customfield['_auction_start_price'] == 'required' ? '<span class="required">* </span>' : '';
-			
-			woocommerce_wp_text_input( array(
-				'custom_attributes' => $required,
-				'id'                => '_auction_start_price',
-				'class'             => 'wc_input_price short',
-				'label'             => $required_html . __( 'Start Price', 'wc_simple_auctions' ) . ' (' . get_woocommerce_currency_symbol() . ')',
-				'type'              => 'number',
-				'custom_attributes' => array(
-					'step' => 'any',
-					'min'  => '0'
-				)
-			) );
-		} else {
-			echo '<input type="hidden" name="_auction_start_price" value="' . $customfield['_auction_start_price'] . '" />';
-		}
-		
-		// _auction_bid_increment
-		if ( isset( $customfield['_auction_bid_increment'] ) && $customfield['_auction_bid_increment'] != 'hidden' ) {
-			$required      = $customfield['_auction_bid_increment'] == 'required' ? array( 'required' => '' ) : '';
-			$required_html = $customfield['_auction_bid_increment'] == 'required' ? '<span class="required">* </span>' : '';
-			
-			woocommerce_wp_text_input( array(
-				'custom_attributes' => $required,
-				'id'                => '_auction_bid_increment',
-				'class'             => 'wc_input_price short',
-				'label'             => $required_html . __( 'Bid increment', 'wc_simple_auctions' ) . ' (' . get_woocommerce_currency_symbol() . ')',
-				'type'              => 'number',
-				'custom_attributes' => array(
-					'step' => 'any',
-					'min'  => '0'
-				)
-			) );
-		} else {
-			echo '<input type="hidden" name="_auction_bid_increment" value="' . $customfield['_auction_bid_increment'] . '" />';
-		}
-		
-		// _auction_start_price
-		if ( isset( $customfield['_auction_reserved_price'] ) && $customfield['_auction_reserved_price'] != 'hidden' ) {
-			$required      = $customfield['_auction_reserved_price'] == 'required' ? array( 'required' => '' ) : '';
-			$required_html = $customfield['_auction_reserved_price'] == 'required' ? '<span class="required">* </span>' : '';
-			
-			woocommerce_wp_text_input( array(
-				'custom_attributes' => $required,
-				'id'                => '_auction_reserved_price',
-				'class'             => 'wc_input_price short',
-				'label'             => $required_html . __( 'Reserve price', 'wc_simple_auctions' ) . ' (' . get_woocommerce_currency_symbol() . ')',
-				'type'              => 'number',
-				'custom_attributes' => array(
-					'step' => 'any',
-					'min'  => '0'
-				),
-				'desc_tip'          => 'true',
-				'description'       => __( 'A reserve price is the lowest price at which you are willing to sell your item. If you don’t want to sell your item below a certain price, you can set a reserve price. The amount of your reserve price is not disclosed to your bidders, but they will see that your auction has a reserve price and whether or not the reserve has been met. If a bidder does not meet that price, you are not obligated to sell your item. ', 'wc_simple_auctions' )
-			) );
-			
-		} else {
-			echo '<input type="hidden" name="_auction_reserved_price" value="' . $customfield['_auction_reserved_price'] . '" />';
-		}
-		
-		// _auction_start_price
-		if ( isset( $customfield['_regular_price'] ) && $customfield['_regular_price'] != 'hidden' ) {
-			$required      = $customfield['_regular_price'] == 'required' ? array( 'required' => '' ) : '';
-			$required_html = $customfield['_regular_price'] == 'required' ? '<span class="required">* </span>' : '';
-			
-			woocommerce_wp_text_input(
-				array(
-					'custom_attributes' => $required,
-					'id'                => '_regular_price',
-					'class'             => 'wc_input_price short',
-					'label'             => $required_html . __( 'Buy it now price', 'wc_simple_auctions' ) . ' (' . get_woocommerce_currency_symbol() . ')',
-					'type'              => 'number',
-					'custom_attributes' => array( 'step' => 'any', 'min' => '0' ),
-					'desc_tip'          => 'true',
-					'description'       => __( 'Buy it now disappears when bid exceeds the Buy now price for normal auction, or is lower than reverse auction', 'wc_simple_auctions' )
-				) );
-		} else {
-			echo '<input type="hidden" name="_regular_price" value="' . $customfield['_regular_price'] . '" />';
-		}
-		
-		$auction_dates_from       = ( $date = get_post_meta( $post->ID, '_auction_dates_from', true ) ) ? $date : '';
-		$required_dates_from      = $customfield['auction_dates_from'][0] == 'required' ? 'required' : '';
-		$required_html_dates_from = $customfield['auction_dates_from'][0] == 'required' ? '<span class="required">* </span>' : '';
-		
-		$auction_dates_to       = ( $date = get_post_meta( $post->ID, '_auction_dates_to', true ) ) ? $date : '';
-		$required_dates_to      = $customfield['auction_dates_to'][0] == 'required' ? 'required' : '';
-		$required_html_dates_to = $customfield['auction_dates_to'][0] == 'required' ? '<span class="required">* </span>' : '';
-		
-		echo '<div class="form-field auction_dates_fields">
-				<label for="_auction_dates_from">' . $required_html_dates_from . __( 'Auction Date from', 'wc_simple_auctions' ) . '</label>
-				<input ' . $required_dates_from . ' type="text" class=" bf_datetime_custom " name="_auction_dates_from" id="_auction_dates_from" value="' . $auction_dates_from . '" placeholder="' . _x( 'From&hellip;', 'placeholder', 'wc_simple_auctions' ) . ' YYYY-MM-DD HH:MM" maxlength="16" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])[ ](0[0-9]|1[0-9]|2[0-4]):(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])" />
-				<label for="_auction_dates_to">' . $required_html_dates_to . __( 'Auction Date to', 'wc_simple_auctions' ) . '</label>
-				<input ' . $required_dates_to . ' type="text" class="bf_datetime_custom " name="_auction_dates_to" id="_auction_dates_to" value="' . $auction_dates_to . '" placeholder="' . _x( 'To&hellip;', 'placeholder', 'wc_simple_auctions' ) . '  YYYY-MM-DD HH:MM" maxlength="16" />
-			</div>';
-		
-		do_action( 'woocommerce_product_options_auction' );
-		
-		echo "</div>";
-		echo "</div>";
-	}
-	
 	/**
 	 * Saves the data inputed into the product boxes, as post meta data
 	 *
@@ -327,7 +176,7 @@ class bf_woo_simple_auction_integration {
 		global $wpdb, $woocommerce, $woocommerce_errors;
 		if ( $post['type'] == 'woocommerce' && ! empty( $this->simple_auction ) ) {
 			$this->save_with_woocommerce_field = true;
-			$this->simple_auction->product_save_data($post_id, null);
+			$this->simple_auction->product_save_data( $post_id, null );
 		}
 	}
 	
