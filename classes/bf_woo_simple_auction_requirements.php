@@ -36,6 +36,12 @@ class bf_woo_simple_auction_requirements {
 		return ( is_plugin_active( 'buddyforms-premium/BuddyForms.php' ) || is_plugin_active( 'buddyforms/BuddyForms.php' ) );
 	}
 	
+	public static function is_woo_elem_active() {
+		self::load_plugins_dependency();
+		
+		return ( is_plugin_active( 'buddyforms-woocommerce-form-elements-premium/BuddyForms.php' ) || is_plugin_active( 'buddyforms-woocommerce-form-elements/loader.php' ) );
+	}
+	
 	public static function is_woocommerce_simple_auction_active() {
 		self::load_plugins_dependency();
 		
