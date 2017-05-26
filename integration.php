@@ -51,7 +51,8 @@ if ( ! class_exists( 'bf_woo_simple_auction' ) ) {
 			require_once BF_WOO_SIMPLE_AUCTION_CLASSES_PATH . 'bf_woo_simple_auction_requirements.php';
 			new bf_woo_simple_auction_requirements();
 			
-			if ( bf_woo_simple_auction_requirements::is_woocommerce_simple_auction_active() && bf_woo_simple_auction_requirements::is_woocommerce_active() ) {
+			if ( bf_woo_simple_auction_requirements::is_woocommerce_simple_auction_active() && bf_woo_simple_auction_requirements::is_woocommerce_active() &&
+			     bf_woo_simple_auction_requirements::is_woo_elem_active()) {
 				require_once BF_WOO_SIMPLE_AUCTION_CLASSES_PATH . 'bf_woo_simple_auction_manager.php';
 				new bf_woo_simple_auction_manager();
 			}
