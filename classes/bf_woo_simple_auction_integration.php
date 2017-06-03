@@ -21,12 +21,18 @@ class bf_woo_simple_auction_integration {
 	private $buddy_form_query;
 	
 	public function __construct() {
+		add_filter( 'bf_woo_element_woo_implemented_tab', array( $this, 'implemented_tab' ), 10, 1 );
 		add_filter( 'buddyforms_formbuilder_fields_options', array( $this, 'buddyforms_simple_auctions_add_wc_form_element_tab' ), 2, 3 );
 		add_action( 'buddyforms_update_post_meta', array( $this, 'buddyforms_product_save_data' ), 99, 2 );
 		add_action( 'buddyforms_after_save_post', array( $this, 'buddyforms_product_save_data_after' ), 992, 1 );
 		add_filter( 'buddyforms_create_edit_form_display_element', array( $this, 'form_display_element' ), 10, 2 );
 		add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ), 99 );
 		add_action( 'buddyforms_the_loop_start', array( $this, 'buddyforms_the_loop_start' ), 10, 1 );
+	}
+	
+	public function implemented_tab( $existing ) {
+		
+		return array_merge( $existing, array( 'auction_tab' ) );
 	}
 	
 	public function buddyforms_the_loop_start( $args ) {
