@@ -88,6 +88,12 @@ class bf_woo_simple_auction_requirements {
 			'required' => true,
 		);
 		
+		$plugins['woocommerce-simple-auctions'] = array(
+			'name'     => 'WooCommerce Simple Auction',
+			'slug'     => 'woocommerce-simple-auctions',
+			'required' => true,
+		);
+		
 		if ( ! defined( 'BUDDYFORMS_PRO_VERSION' ) ) {
 			$plugins['buddyforms'] = array(
 				'name'     => 'BuddyForms',
