@@ -30,6 +30,17 @@ class bf_woo_simple_auction_integration {
 		add_action( 'buddyforms_the_loop_start', array( $this, 'buddyforms_the_loop_start' ), 10, 1 );
 	}
 	
+	/**
+	 * @return WooCommerce_simple_auction
+	 */
+	public function get_woo_auction() {
+		if ( empty( $this->simple_auction ) ) {
+			$this->simple_auction = new WooCommerce_simple_auction();
+		}
+		
+		return $this->simple_auction;
+	}
+	
 	public function implemented_tab( $existing ) {
 		
 		return array_merge( $existing, array( 'auction_tab' ) );
@@ -56,8 +67,7 @@ class bf_woo_simple_auction_integration {
 		}
 		if ( ( $customfield['type'] == 'woocommerce' || $customfield['type'] == 'product-gallery' ) && is_user_logged_in() ) {
 			if ( ! $this->loaded_script ) {
-				$this->simple_auction = new WooCommerce_simple_auction();
-				$this->add_scripts( $this->simple_auction, $customfield );
+				$this->add_scripts( $customfield );
 			}
 		}
 		
@@ -65,10 +75,10 @@ class bf_woo_simple_auction_integration {
 	}
 	
 	/**
-	 * @param WooCommerce_simple_auction $simple_auction
 	 * @param array $custom_field
 	 */
-	private function add_scripts( $simple_auction, $custom_field ) {
+	private function add_scripts( $custom_field ) {
+		$simple_auction = $this->get_woo_auction();
 		wp_register_script(
 			'simple-auction-admin',
 			$simple_auction->plugin_url . '/js/simple-auction-admin.js',
@@ -180,9 +190,10 @@ class bf_woo_simple_auction_integration {
 	 */
 	public function buddyforms_product_save_data( $post, $post_id ) {
 		global $wpdb, $woocommerce, $woocommerce_errors;
-		if ( $post['type'] == 'woocommerce' && ! empty( $this->simple_auction ) ) {
+		$simple_auction = $this->get_woo_auction();
+		if ( $post['type'] == 'woocommerce' && ! empty( $simple_auction ) ) {
 			$this->save_with_woocommerce_field = true;
-			$this->simple_auction->product_save_data( $post_id, null );
+			$simple_auction->product_save_data( $post_id, null );
 		}
 	}
 	
