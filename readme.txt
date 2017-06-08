@@ -4,7 +4,7 @@ Contributors: svenl77,konradS, buddyforms
 Tags: buddypress, user, members, profiles, custom post types, taxonomy, frontend posting, frontend editing, simple auction
 Requires at least: 3.9
 Tested up to: 4.7.3
-Stable tag: 1.0.3.1
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,34 +79,31 @@ The plugin should work with every theme. (Please let us know if you experience a
 
 == Changelog ==
 
+= 1.1 7.Jun.2017 =
+* Refactoring, cleaning and changing the structure.
+* Integrating the auction tab to the front of buddyform submit page
+* implement the field option to apply in the front
+* Updating the save process to use the original function
+* Adding a check for buddyform as requirement
+* Adding Woo Simple Auction to the requirement list
+* Adding the hook to notify to the handler for this is an implemented tab
+* Fixing the bug to save all the related metadad in the metabox
 
--- 1.0.3.1 --
-<ul>
-<li>Fixed and issue with the dependencies check. The function tgmpa does not accepted an empty array.</li>
-</ul>
+= 1.0.3.1 =
+* Fixed and issue with the dependencies check. The function tgmpa does not accepted an empty array.
 
+= 1.0.3 =
+* Add dependencies management with tgm
 
--- 1.0.3 --
-<ul>
-<li>Add dependencies management with tgm</li>
-</ul>
+= 1.0.2 =
+* smaller changes
+* code cleanup
+* Update the readme to support the latest WordPress version
 
+= 1.0.1 =
+* smaller changes
+* code cleanup
+* Update the readme file and screenshots
 
--- 1.0.2 --
-<ul>
-<li>smaller changes</li>
-<li>code cleanup</li>
-<li>Update the readme to support the latest WordPress version</li>
-</ul>
-
-
--- 1.0.1 --
-<ul>
-<li>smaller changes</li>
-<li>code cleanup</li>
-<li>Update the readme file and screenshots</li>
-</ul>
-
-
--- 1.0 --
-<ul><li>Initial release 1.0</li></ul>
+= 1.0 =
+* Initial release 1.0
