@@ -1,6 +1,6 @@
 === BuddyForms WooCommerce Simple Auction ===
 
-Contributors: svenl77,konradS, buddyforms
+Contributors: svenl77, konradS, buddyforms, gfirem
 Tags: buddypress, user, members, profiles, custom post types, taxonomy, frontend posting, frontend editing, simple auction
 Requires at least: 3.9
 Tested up to: 4.7.3
