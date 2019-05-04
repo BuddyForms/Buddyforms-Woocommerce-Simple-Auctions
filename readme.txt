@@ -3,8 +3,8 @@
 Contributors: svenl77, konradS, buddyforms, gfirem
 Tags: buddypress, user, members, profiles, custom post types, taxonomy, frontend posting, frontend editing, simple auction
 Requires at least: 3.9
-Tested up to: 4.7.3
-Stable tag: 1.1
+Tested up to: 5.2
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,11 @@ The plugin should work with every theme. (Please let us know if you experience a
 3. **Date Select** - Select your auction dates with a mobile ready date picker.
 
 == Changelog ==
+
+= 1.2 04. May. 2019 =
+* Added Text Domain: buddyforms
+* Added compatibility for WordPress 5.2
+* Clean up The code
 
 = 1.1 7.Jun.2017 =
 * Refactoring, cleaning and changing the structure.
