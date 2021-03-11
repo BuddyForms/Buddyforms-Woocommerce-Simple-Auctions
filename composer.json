@@ -1,0 +1,27 @@
+{
+  "name": "themekraft/bf-woo-simple-auction",
+  "description": "This is the BuddyForms WooCommerce Simple Auction Extension. Use Simple Auction Form Elements in the Form Builder.",
+  "keywords": [
+    "buddyforms",
+    "woocommerce",
+    "e-commerce",
+    "simple-auction"
+  ],
+  "homepage": "http://www.themekraft.com",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "Sven Lehnert",
+      "email": "svenl@themekraft.com"
+    },
+    {
+      "name": "Guillermo Figueroa Mesa",
+      "email": "gfirem@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require-dev": {
+    "consolidation/robo": "^1.0.0"
+  }
+}
