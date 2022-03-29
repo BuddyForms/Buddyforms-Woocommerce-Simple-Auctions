@@ -3,7 +3,7 @@
  * Plugin Name: Buddyforms Woocommerce Simple Auctions Integration
  * Plugin URI: http://buddyforms.com/downloads/buddyforms-woocommerce-simple-auctions/
  * Description: This plugin adds woocommerce simple auctions fields to frontend buddypress profile interface using buddyforms
- * Version: 1.2.2
+ * Version: 1.2.3
  * Author: ThemeKraft
  * Author URI: https://themekraft.com/buddyforms/
  * License: GPLv2 or later
