@@ -107,4 +107,6 @@ jQuery(function ($) {
 		_regular_price_field.hide();
 	}
 
+	jQuery( ".wc-backbone-modal, .wc-backbone-modal-backdrop" ).remove();
+
 });
