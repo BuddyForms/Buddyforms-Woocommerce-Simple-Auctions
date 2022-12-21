@@ -1,10 +1,10 @@
-=== BuddyForms WooCommerce Simple Auction ===
+=== BuddyForms Simple Auctions Integration for WooCommerce ===
 
 Contributors: svenl77, konradS, buddyforms, gfirem
 Tags: buddypress, user, members, profiles, custom post types, taxonomy, frontend posting, frontend editing, simple auction
 Requires at least: 3.9
-Tested up to: 5.2
-Stable tag: 1.2
+Tested up to: 6.1.1
+Stable tag: 1.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,29 @@ The plugin should work with every theme. (Please let us know if you experience a
 3. **Date Select** - Select your auction dates with a mobile ready date picker.
 
 == Changelog ==
+= 1.2.6 - 20 Dec 2022 =
+* Added jquery to hide empty variation price popup.
+* Improved frontent CSS.
+* Tested up to WordPress 6.1.1
+
+= 1.2.5 - 11 Aug 2022 =
+* Updated plugin name.
+* Tested up with WordPress 6.0.1
+
+= 1.2.4 - 17 May 2022 =
+* Updated readme.txt
+
+= 1.2.3 - 28 Mar 2022 =
+* Tested up to WordPress 5.9
+* Tested up to WC 6.3.1
+
+= 1.2.2 - 03 Oct 2021 =
+* Tested up with WordPress 5.8
+* Tested up with WC 5.7.0
+
+= 1.2.1 - 11 Mar 2021 =
+* Tested up with WordPress 5.7
+* Tested up with WC 5.1.0
 
 = 1.2 04. May. 2019 =
 * Added Text Domain: buddyforms

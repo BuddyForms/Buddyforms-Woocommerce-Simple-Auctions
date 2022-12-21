@@ -1,15 +1,15 @@
 <?php
 /*
- * Plugin Name: Buddyforms Woocommerce Simple Auctions Integration
+ * Plugin Name: Buddyforms Simple Auctions Integration for WooCommerce
  * Plugin URI: http://buddyforms.com/downloads/buddyforms-woocommerce-simple-auctions/
  * Description: This plugin adds woocommerce simple auctions fields to frontend buddypress profile interface using buddyforms
- * Version: 1.2
+ * Version: 1.2.6
  * Author: ThemeKraft
  * Author URI: https://themekraft.com/buddyforms/
  * License: GPLv2 or later
  * Network: false
  * Text Domain: buddyforms
- *
+ * Svn: buddyforms-woocommerce-simple-auction
  * @package bf_woo_simple_auction
  *
  *****************************************************************************
@@ -36,29 +36,29 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 if ( ! class_exists( 'bf_woo_simple_auction' ) ) {
-	
+
 	class bf_woo_simple_auction {
-		
+
 		/**
 		 * Instance of this class
 		 *
 		 * @var $instance bf_woo_elem
 		 */
 		protected static $instance = null;
-		
+
 		private function __construct() {
 			$this->constants();
 			$this->load_plugin_textdomain();
 			require_once BF_WOO_SIMPLE_AUCTION_CLASSES_PATH . 'bf_woo_simple_auction_requirements.php';
 			new bf_woo_simple_auction_requirements();
-			
+
 			if ( bf_woo_simple_auction_requirements::is_woocommerce_simple_auction_active() && bf_woo_simple_auction_requirements::is_woocommerce_active() &&
-			     bf_woo_simple_auction_requirements::is_woo_elem_active()) {
+				 bf_woo_simple_auction_requirements::is_woo_elem_active() ) {
 				require_once BF_WOO_SIMPLE_AUCTION_CLASSES_PATH . 'bf_woo_simple_auction_manager.php';
 				new bf_woo_simple_auction_manager();
 			}
 		}
-		
+
 		private function constants() {
 			define( 'BF_WOO_SIMPLE_AUCTION_BASE_NAME', plugin_basename( __FILE__ ) );
 			define( 'BF_WOO_SIMPLE_AUCTION_BASE_NAMEBASE_FILE', trailingslashit( wp_normalize_path( plugin_dir_path( __FILE__ ) ) ) . 'loader.php' );
@@ -67,7 +67,7 @@ if ( ! class_exists( 'bf_woo_simple_auction' ) ) {
 			define( 'BF_WOO_SIMPLE_AUCTION_VIEW_PATH', dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR );
 			define( 'BF_WOO_SIMPLE_AUCTION_CLASSES_PATH', dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR );
 		}
-		
+
 		/**
 		 * Return an instance of this class.
 		 *
@@ -76,17 +76,17 @@ if ( ! class_exists( 'bf_woo_simple_auction' ) ) {
 		public static function get_instance() {
 			// If the single instance hasn't been set, set it now.
 			if ( null == self::$instance ) {
-				self::$instance = new self;
+				self::$instance = new self();
 			}
-			
+
 			return self::$instance;
 		}
-		
+
 		public function load_plugin_textdomain() {
 			load_plugin_textdomain( 'bf_woo_simple_auction_locale', false, basename( dirname( __FILE__ ) ) . '/languages' );
 		}
-		
+
 	}
-	
+
 	add_action( 'plugins_loaded', array( 'bf_woo_simple_auction', 'get_instance' ), 1 );
 }
